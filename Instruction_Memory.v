@@ -1,6 +1,5 @@
 
 module Instruction_Memory(rst,A,RD);
-
   input rst;
   input [31:0]A;
   output [31:0]RD;
@@ -12,7 +11,7 @@ reg [31:0] inst_mem [1023:0]
 // A = 0000 -> inst_mem[0]
 // A = 0004 -> inst_mem[1]
 // A = 0008 -> inst_mem[2]
-assign RD = (rst = 1'b1) ? {32{1'b1}} : inst_mem[A >> 2]; 
+assign RD = (rst == 1'b1) ? {32{1'b1}} : inst_mem[A >> 2]; 
 
     // Initialize memory contents directly in code
 initial begin
