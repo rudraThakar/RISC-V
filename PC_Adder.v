@@ -5,5 +5,5 @@ module PC_Adder (a,b,c);
     output [31:0]c;
 
     assign c = a + b;
-    
+
 endmodule
