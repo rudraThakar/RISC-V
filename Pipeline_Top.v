@@ -1,6 +1,6 @@
 
 `include "Fetch_Cycle.v"
-`include "Decode_Cyle.v"
+`include "Decode_Cycle.v"
 `include "Execute_Cycle.v"
 `include "Memory_Cycle.v"
 `include "Writeback_Cycle.v"    
@@ -14,9 +14,10 @@
 `include "ALU.v"
 `include "Data_Memory.v"
 `include "Hazard_unit.v"
+`include "Mux_3_by_1.v"
 
 
-module Pipeline_top(clk, rst);
+module Pipeline_Top(clk, rst);
 
     // Declaration of I/O
     input clk, rst;
@@ -33,7 +34,7 @@ module Pipeline_top(clk, rst);
 
     // Module Initiation
     // Fetch Stage
-    fetch_cycle Fetch (
+    Fetch_Cycle Fetch (
                         .clk(clk), 
                         .rst(rst), 
                         .PCSrcE(PCSrcE), 
