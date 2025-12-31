@@ -18,6 +18,7 @@ This repository contains a high-performance **5-stage pipelined RISC-V processor
     * **Load-Use Stalling:** Automatically detects dependencies on `lw` instructions and inserts a 1-cycle hardware bubble by freezing the PC and IF/ID registers.
     * **Control Hazard Flushing:** Implements a 2-cycle pipeline flush (IF and ID) whenever a branch or jump is taken to maintain architectural consistency.
 
+* **Branch Prediction:** Currently, the design has "Always Not Taken" Branch predictor, and flushes the pipeline if Branch has to be taken
 * **Linking Logic:** Fully supports `JAL` and `JALR` instructions by calculating and storing the return address ($PC + 4$) into the destination register.
 
 ## 🛠 Supported Instructions
@@ -49,7 +50,7 @@ add  x4, x1, x3    # x4 = 30 (Forward x1 from MEM/WB, x3 from EX/MEM)
 
 
 ### 2. Load-Use Hazard (Stalling)
-Verified that the forwarding unit correctly prioritizes the MEM stage result over the WB stage result when a register is modified in back-to-back cycles.
+Verified that the Hazard Unit correctly freezes the pipeline for 1 cycle when an instruction depends on a lw result.
 ```riscv
 addi x1, x0, 32    # Base address for store
 addi x2, x0, 100   # Value to store
@@ -61,7 +62,7 @@ add  x4, x3, x3    # x4 = 200 (MUST STALL HERE)
 
 
 ### 3. Branch & Jump (Control Hazards)
-Verified that the forwarding unit correctly prioritizes the MEM stage result over the WB stage result when a register is modified in back-to-back cycles.
+Verified that the Flush happens in case of incorrect Branch Prediction/Jump
 ```riscv
 addi x1, x0, 5
 addi x2, x0, 5
@@ -79,7 +80,7 @@ addi x5, x0, 77    # Final landing spot
 
 
 ### 4. Jal/JalR Check
-Verified that the forwarding unit correctly prioritizes the MEM stage result over the WB stage result when a register is modified in back-to-back cycles.
+Verified JAL and JALR instructions
 ```riscv
 addi x1, x0, 20    # Load 20 into x1 
 jal  x5, 12        # Jump to PC (4 + 12) = 16. Save PC + 4 (8) into x5
