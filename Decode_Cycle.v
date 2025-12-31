@@ -1,6 +1,6 @@
 //Note: RS2 = Rt (Source register 2)
 module decode_cycle(
-    // Declaring I/O
+    
     input clk, rst, RegWriteW, FlushD1, FlushD2,
     input [4:0] WriteRegW,
     input [31:0] InstrD, PCD, PCPlus4D, ResultW,
@@ -22,7 +22,7 @@ module decode_cycle(
 
     //wire FlushD = FlushD1 | FlushD2;   //IMPORTANT
 
-    // Declaration of pipeline Register (to hold values between clock cycles)
+    // Declaration of pipeline Register 
     reg RegWriteD_r, MemtoRegD_r, MemWriteD_r, ALUSrcD_r, BranchD_r, JumpD_r, JumpRegD_r;
     reg [2:0] funct3_r;
     reg [3:0] ALUControlD_r;
@@ -167,9 +167,9 @@ end
     assign PCPlus4E = PCPlus4D_r;
 
 
-always @(negedge clk) begin
-        $display("DECODE STAGE: InstrD = %h, FlushD1=%b, FlushD2=%b, FlushD=%b, PCE=%d, time=%0t", InstrD, FlushD1, FlushD2, FlushD1|FlushD2, PCE, $time);
-    end
+// always @(negedge clk) begin
+//         $display("DECODE STAGE: InstrD = %h, FlushD1=%b, FlushD2=%b, FlushD=%b, PCE=%d, time=%0t", InstrD, FlushD1, FlushD2, FlushD1|FlushD2, PCE, $time);
+//     end
 
 endmodule
 
