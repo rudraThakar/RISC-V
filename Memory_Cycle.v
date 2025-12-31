@@ -1,7 +1,6 @@
 
 module memory_cycle(
     
-    // Declaration of I/Os
     input clk, rst, RegWriteM, MemtoRegM, MemWriteM, JumpM,
     input [4:0] WriteReg_M,
     input [31:0] InstrM, PCPlus4M, WriteDataM, ALU_ResultM,
@@ -52,9 +51,6 @@ module memory_cycle(
         end
     end 
 
-// always@(*) begin
-//         $display("~~MEM CYCLE: InstrM = %h, Time = %0t", InstrM, $time);
-//     end
 
     // Declaration of output assignments
     assign RegWriteW = RegWriteM_r;
@@ -64,5 +60,9 @@ module memory_cycle(
     assign PCPlus4W = PCPlus4M_r;
     assign ALU_ResultW = ALU_ResultM_r;
     assign ReadDataW = ReadDataM_r;
+
+// always@(*) begin
+//         $display("~~MEM CYCLE: InstrM = %h, Time = %0t", InstrM, $time);
+//     end
 
 endmodule
