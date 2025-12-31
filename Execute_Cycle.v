@@ -63,6 +63,7 @@ module execute_cycle(
     //         .c(Src_B)
     //         );
 
+//We replace the above mux with the following conditional assignment to accomodate branch instructions
     
     assign Src_B = (BranchE) ? Src_B_interim :
                 (ALUSrcE) ? Imm_Ext_E :
@@ -73,10 +74,6 @@ module execute_cycle(
 wire [31:0] JalrTargetE;
 assign JalrTargetE = (Src_A + Imm_Ext_E) & 32'hFFFFFFFE;
 
-// assign PCTargetE =
-//     JumpRegE ? JalrTargetE :
-//     JumpE    ? (PCE + Imm_Ext_E) :
-//                (PCE + Imm_Ext_E);   // branch (same form)
 
 assign PCTargetE =
     JumpRegE ? (JalrTargetE) :
@@ -164,9 +161,9 @@ assign PCTargetE =
     assign ALU_ResultM = ResultE_r;
     assign InstrM = InstrE_r;
 
-always@(negedge clk) begin
-        $display("EX STAGE: InstrE = %h, ForwardA_E = %b, ForwardB_E = %b, PCSrcE=%b, PCE = %d, FlushF=%b, FlushD2=%b, time= %0t", InstrE, ForwardA_E, ForwardB_E, PCSrcE, PCE, FlushF, FlushD2, $time);
-    end
+// always@(negedge clk) begin
+//         $display("EX STAGE: InstrE = %h, ForwardA_E = %b, ForwardB_E = %b, PCSrcE=%b, PCE = %d, FlushF=%b, FlushD2=%b, time= %0t", InstrE, ForwardA_E, ForwardB_E, PCSrcE, PCE, FlushF, FlushD2, $time);
+//     end
 
 
 endmodule
