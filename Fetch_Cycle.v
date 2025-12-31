@@ -71,11 +71,6 @@ always @(posedge clk or posedge rst) begin
     // else: hold previous values (stall)
 end
 
-
-    // Assigning Registers Value to the Output port
-    // assign  InstrD = (rst == 1'b1) ? 32'h00000000 : InstrF_r;
-    // assign  PCD = (rst == 1'b1) ? 32'h00000000 : PCF_r;
-    // assign  PCPlus4D = (rst == 1'b1) ? 32'h00000000 : PCPlus4F_r;
     assign  InstrD = InstrF_r;
     assign  PCD = PCF_r;
     assign  PCPlus4D = PCPlus4F_r;
