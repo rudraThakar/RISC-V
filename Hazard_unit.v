@@ -5,25 +5,6 @@
 // know whether the destination register will actually be written
 
 
-// module hazard_unit(
-// //RD_M = WriteRegM[4:0] -> Desitnation register in Memory stage
-// //RD_W = WriteRegW[4:0] -> Destination register in Writeback stage
-//     // Declaration of I/Os
-    
-//     input rst, RegWriteM, RegWriteW,
-//     input [4:0] RD_M, RD_W, Rs1_E, Rs2_E,
-//     output [1:0] ForwardAE, ForwardBE
-// );    
-//     assign ForwardAE = (rst == 1'b1) ? 2'b00 : 
-//                        ((RegWriteM == 1'b1) && (RD_M != 5'h00) && (RD_M == Rs1_E)) ? 2'b10 :
-//                        ((RegWriteW == 1'b1) && (RD_W != 5'h00) && (RD_W == Rs1_E)) ? 2'b01 : 2'b00;
-                       
-//     assign ForwardBE = (rst == 1'b1) ? 2'b00 : 
-//                        ((RegWriteM == 1'b1) && (RD_M != 5'h00) && (RD_M == Rs2_E)) ? 2'b10 :
-//                        ((RegWriteW == 1'b1) && (RD_W != 5'h00) && (RD_W == Rs2_E)) ? 2'b01 : 2'b00;
-
-// endmodule
-
 
 module hazard_unit(
     input  rst,
@@ -43,23 +24,18 @@ module hazard_unit(
     output [1:0] ForwardAE,
     output [1:0] ForwardBE,
 
-    output StallF,    //for stalling purpose
-    output StallD,
-    output FlushD1     //Flush the Decode-Execute register
+    output StallF,    //for stalling the Program counter
+    output StallD,    //for stalling the Fetch-Decode pipeline register
+    output FlushD1     //Flush the Decode-Execute pipeline register
+
+//NOTE: The Decode-Execute pipeline registers are flushed due to 2 main reasons:
+// 1. Load-use hazard (inserting a bubble)  ----> FlushD1
+// 2. Branch/jump taken (clearing the mispredicted instruction)  -----> FlushD2
 );
 
     wire lw_stall;
 
-    // assign lw_stall = MemtoRegE &&
-    //                   ((RD_E == RS1_D) || (RD_E == RS2_D)) &&
-    //                   (RD_E != 5'd0);
 
-    // assign StallF = lw_stall & ~PCSrcE;  //do not stall if branch is taken
-    // assign StallD = lw_stall & ~PCSrcE;  //do not stall if branch is taken  
-    // assign FlushD1 = lw_stall;
-
-
-//___________________________________________________________________________
     // The lw_stall is true when we need to wait for memory data
     assign lw_stall = MemtoRegE && (RD_E != 5'd0) && ((RD_E == RS1_D) || (RD_E == RS2_D));
 
@@ -73,7 +49,6 @@ module hazard_unit(
     // 1. We have a load-use hazard (insert a bubble)
     // 2. OR we have a branch/jump taken (clear the mispredicted instruction)
     assign FlushD1 = lw_stall || PCSrcE;
-//___________________________________________________________________________________
 
 
     // Forward A (rs1)
