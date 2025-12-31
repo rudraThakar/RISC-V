@@ -1,11 +1,11 @@
 
-module Mux (a,b,s,c);    //2:1 MUX
+module Mux (a,b,sel,c);    //2:1 MUX
 
     input [31:0]a,b;
-    input s;
+    input sel;
     output [31:0]c;
 
-    assign c = (~s) ? a : b ;
+    assign c = (~sel) ? a : b ;
     
 endmodule
 

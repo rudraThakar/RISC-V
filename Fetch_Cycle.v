@@ -1,36 +1,37 @@
 
-module Fetch_Cycle(clk, rst, PCSrcE, PCTargetE, InstrD, PCD, PCPlus4D);
+module Fetch_Cycle(
 
     // Declare input & outputs
-    input clk, rst;
-    input PCSrcE;
-    input [31:0] PCTargetE;
-    output [31:0] InstrD;
-    output [31:0] PCD, PCPlus4D;
+    input clk, rst, StallD, StallF, FlushF,
+    input PCSrcE,   
+    input [31:0] PCTargetE,
+    output [31:0] InstrD,
+    output [31:0] PCD, PCPlus4D
+);
 
     // Declaring interim wires
-    wire [31:0] PC_F, PCF, PCPlus4F;
+    wire [31:0] Next_PC_F, PCF, PCPlus4F;
     wire [31:0] InstrF;
 
-    // Declaration of Register
-    reg [31:0] InstrF_reg;
-    reg [31:0] PCF_reg, PCPlus4F_reg;
-
+    // Declaration of Pipeline Register
+    reg [31:0] InstrF_r;
+    reg [31:0] PCF_r, PCPlus4F_r;
 
     // Initiation of Modules
     // Declare PC Mux
     Mux PC_MUX (.a(PCPlus4F),
                 .b(PCTargetE),
-                .s(PCSrcE),
-                .c(PC_F)
+                .sel(PCSrcE),
+                .c(Next_PC_F)
                 );
 
     // Declare PC Counter
-    PC_Module Program_Counter (
+    PC Program_Counter (
                 .clk(clk),
                 .rst(rst),
-                .PC(PCF),
-                .PC_Next(PC_F)
+                .PC_Next(Next_PC_F),
+                .StallF(StallF),
+                .PC(PCF)
                 );
 
     // Declare Instruction Memory
@@ -47,25 +48,44 @@ module Fetch_Cycle(clk, rst, PCSrcE, PCTargetE, InstrD, PCD, PCPlus4D);
                 .c(PCPlus4F)
                 );
 
-    // Fetch Cycle Register Logic
-    always @(posedge clk or negedge rst) begin
-        if(rst == 1'b0) begin
-            InstrF_reg <= 32'h00000000;
-            PCF_reg <= 32'h00000000;
-            PCPlus4F_reg <= 32'h00000000;
-        end
-        else begin
-            InstrF_reg <= InstrF;
-            PCF_reg <= PCF;
-            PCPlus4F_reg <= PCPlus4F;
-        end
+always @(posedge clk or posedge rst) begin
+    if (rst == 1'b1) begin
+        InstrF_r    <= 32'h00000000;
+        PCF_r       <= 32'h00000000;
+        PCPlus4F_r  <= 32'h00000000;
     end
+
+        //  FLUSH DECODE STAGE (branch taken)
+    else if (FlushF) begin
+        InstrF_r    <= 32'h00000000;   // NOP
+        PCF_r       <= 32'h00000000;
+        PCPlus4F_r  <= 32'h00000000;
+    end
+
+    // STALL DECODE STAGE
+    else if (!StallD) begin
+        InstrF_r    <= InstrF;
+        PCF_r       <= PCF;
+        PCPlus4F_r  <= PCPlus4F;
+    end
+    // else: hold previous values (stall)
+end
 
 
     // Assigning Registers Value to the Output port
-    assign  InstrD = (rst == 1'b0) ? 32'h00000000 : InstrF_reg;
-    assign  PCD = (rst == 1'b0) ? 32'h00000000 : PCF_reg;
-    assign  PCPlus4D = (rst == 1'b0) ? 32'h00000000 : PCPlus4F_reg;
+    // assign  InstrD = (rst == 1'b1) ? 32'h00000000 : InstrF_r;
+    // assign  PCD = (rst == 1'b1) ? 32'h00000000 : PCF_r;
+    // assign  PCPlus4D = (rst == 1'b1) ? 32'h00000000 : PCPlus4F_r;
+    assign  InstrD = InstrF_r;
+    assign  PCD = PCF_r;
+    assign  PCPlus4D = PCPlus4F_r;
+
+// always@(negedge clk) begin
+//         $display("FETCH STAGE: InstrD = %h,StallF=%b, FlushF=%b, time=%0t",
+//             InstrD, StallF,FlushF, $time);
+//     end
 
 
 endmodule
+
+
