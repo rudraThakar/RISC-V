@@ -6,7 +6,6 @@ module Control_Unit(
     input [2:0]funct3,
 
     output RegWrite, MemWrite, MemToReg, ALUSrc, Branch, Jump, JumpReg, 
-    //output [1:0]ImmSrc,
     output [3:0]ALUControl
 );
 
@@ -16,9 +15,6 @@ module Control_Unit(
                 .opcode(Op),
                 
                 .RegWrite(RegWrite),
-                //.RegDst(RegDst),
-                //.ImmSrc(ImmSrc),
-                //.MemRead(MemRead),
                 .MemWrite(MemWrite),
                 .MemToReg(MemToReg),
                 .ALUSrc(ALUSrc),
