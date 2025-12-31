@@ -33,15 +33,15 @@ module pipeline_tb;
     @(negedge rst);
 
     // let pipeline run
-    repeat (30) @(posedge clk);
+    repeat (20) @(posedge clk);
 
     // R-type instruction checks
     
-    //check_reg(1, 32'd20);           // add  x3 = 5 + 3
-    check_reg(2, 32'd120);    // sub  x4 = 5 - 3
-    //check_reg(4, 32'd50);        // or   x6 = 5 | 3
-    //check_reg(5, 32'd8);        // or   x6 = 5 | 3
-    //check_reg(6, 32'd24);       // or   x6 = 5 | 3
+    //check_reg(1, 32'd20);   
+    check_reg(2, 32'd120);    
+    //check_reg(4, 32'd50);       
+    //check_reg(5, 32'd8);        
+    //check_reg(6, 32'd24);       
 
 
     $display("=== JAL/JALR tests PASSED ===");
@@ -73,99 +73,5 @@ module pipeline_tb;
 
 
 endmodule
-
-
-
-
-
-// // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// // `timescale 1ns/1ps
-
-// // module pipeline_tb;
-
-// //   reg clk;
-// //   reg rst;
-
-// //   Pipeline_Top dut (
-// //     .clk(clk),
-// //     .rst(rst)
-// //   );
-
-// //   // Clock generation (100 MHz)
-// //   initial begin
-// //     clk = 0;
-// //     forever #5 clk = ~clk;
-// //   end
-
-// //   // Reset sequence
-// //   initial begin
-// //     rst = 1;
-// //     #30;
-// //     rst = 0;
-// //   end
-
-
-// //   initial begin
-// //     $display("=== Starting RISC-V CPU Testbench ===");
-
-// //     $display("IF STAGE: PC = %h, InstrD=%h TIME=%0t",
-// //                     dut.Fetch.PCD,
-// //                     dut.Fetch.InstrD, $time);
-
-// //     $display("ID STAGE: RegWriteW=%0d WriteRegW=%0d TIME=%0t",
-// //                     dut.Decode.RegWriteW,
-// //                     dut.Decode.WriteRegW,
-// //                     $time);
-
-// //     $display("ID STAGERS1=%h RS2=%h, TIME=%0t",
-// //                     dut.Decode.RS1_D_r,
-// //                     dut.Decode.RS2_D_r,
-// //                     $time);
-
-    
-// //   end
-
-// //   initial begin
-// //     #1000;
-// //     $display("=== Ending RISC-V CPU Testbench ===");
-// //     $finish;
-// //   end
-
-
-// //     task check_reg(input integer regnum, input [31:0] expected);
-// //     begin
-// //         if (dut.Decode.rf.Register[regnum] !== expected) begin
-
-// //             $display("IF STAGE: InstrD=%h TIME=%0t",
-// //                     dut.Fetch.InstrD, $time);
-
-// //             $display("ID STAGE: RegWriteW=%0d WriteRegW=%0d TIME=%0t",
-// //                     dut.Decode.RegWriteW,
-// //                     dut.Decode.WriteRegW,
-// //                     $time);
-
-// //             $display("ID STAGERS1=%h RS2=%h, TIME=%0t",
-// //                     dut.Decode.RS1_D_r,
-// //                     dut.Decode.RS2_D_r,
-// //                     $time);
-
-// //             $fatal;
-// //         end
-// //         else begin
-// //             $display("OK: x%0d = %h", regnum, expected);
-// //         end
-// //     end
-// //     endtask
-
-
-
-// // endmodule
-
-
-
-
-
-
 
 
