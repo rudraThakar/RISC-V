@@ -8,15 +8,7 @@ input [31:0] PCPlus4W, ALU_ResultW, ReadDataW,
 output [31:0] ResultW
 );
 
-// Declaration of Module
-// Mux result_mux (    
-//                 .a(ALU_ResultW),
-//                 .b(ReadDataW),
-//                 .sel(MemtoRegW),
-//                 .c(ResultW)
-//                 );
-
-
+//the conditional assignemnts act as MUX
 assign ResultW =
     JumpW     ? PCPlus4W :
     MemtoRegW ? ReadDataW :
