@@ -34,6 +34,39 @@ The processor handles a broad subset of the **RV32I** Base Integer Instruction S
 
 ---
 
+## Timing Analysis
+
+The design was synthesised using the Skywater 130nm PDK, using Yosys. Timinig analysis was done using the TritonSTA (OpenSTA-based), which is the default timing engine of OpenROAD.
+The analysis should a positive slack of +1.2619 at a clock speed of 25ns (40MHz). Thus, we can safely inscrease the clock speed upto 42MHz (ensuring positive slack is met).
+
+```
+    Delay      Time   Description
+-------------------------------------------------------------
+   0.0000    0.0000   clock clk (rise edge)
+   0.0000    0.0000   clock network delay (ideal)
+   0.0000    0.0000 ^ _175148_/CLK (sky130_fd_sc_hd__dfrtp_1)
+  14.7695   14.7695 ^ _175148_/Q (sky130_fd_sc_hd__dfrtp_1)
+   7.0582   21.8277 v _123199_/Y (sky130_fd_sc_hd__nand2_1)
+   1.5138   23.3415 v _123231_/X (sky130_fd_sc_hd__mux2_1)
+   0.0000   23.3415 v _174912_/D (sky130_fd_sc_hd__dfrtp_1)
+            23.3415   data arrival time
+
+  25.0000   25.0000   clock clk (rise edge)
+   0.0000   25.0000   clock network delay (ideal)
+  -0.2000   24.8000   clock uncertainty
+   0.0000   24.8000   clock reconvergence pessimism
+            24.8000 ^ _174912_/CLK (sky130_fd_sc_hd__dfrtp_1)
+  -0.1966   24.6034   library setup time
+            24.6034   data required time
+-------------------------------------------------------------
+            24.6034   data required time
+           -23.3415   data arrival time
+-------------------------------------------------------------
+             1.2619   slack (MET)
+```
+
+### Note : I will be trying to reduce the critical path delay, to inscrease the clock speed and update the design, as ad when time permits.
+
 ## Verification & Test Results
 The design was rigorously verified through targeted assembly test cases. Below are the verified scenarios:
 
